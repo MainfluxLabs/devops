@@ -175,6 +175,8 @@ spec:
               value: {{ default .Values.defaults.logLevel .Values.mqtt.adapter.logLevel }}
             - name: MF_MQTT_ADAPTER_MQTT_PORT
               value: "{{ .Values.mqtt.adapter.mqttPort }}"
+            - name: MF_MQTT_ADAPTER_HTTP_PORT
+              value: "{{ .Values.mqtt.adapter.httpPort }}"
             - name: MF_MQTT_ADAPTER_WS_PORT
               value: "{{ .Values.mqtt.adapter.wsPort }}"
             - name: MF_MQTT_ADAPTER_ES_URL
@@ -199,6 +201,26 @@ spec:
               value: {{ .Release.Name }}-redis-auth-master:{{ .Values.mqtt.redisCachePort }}
             - name: MF_MQTT_ADAPTER_MQTT_TARGET_HEALTH_CHECK
               value: http://localhost:8888/health
+            - name: MF_MQTT_ADAPTER_DB_PORT
+              value: "{{ .Values.mqtt.adapter.dbPort }}"
+            - name: MF_MQTT_ADAPTER_DB_USER
+              value: "{{ .Values.postgresmqtt.postgresqlUsername }}"
+            - name: MF_MQTT_ADAPTER_DB_PASS
+              value: "{{ .Values.postgresmqtt.postgresqlPassword }}"
+            - name: MF_MQTT_ADAPTER_DB
+              value: "{{ .Values.postgresmqtt.postgresqlDatabase }}"
+            - name: MF_MQTT_ADAPTER_DB_HOST
+              {{- if .Values.postgresmqtt.enabled }}
+              value: {{ .Release.Name }}-postgresmqtt
+              {{- else }}
+              value: {{ .Values.postgresmqtt.postgresqlHost }}
+              {{- end }}
+            - name: MF_MQTT_ADAPTER_DB_SSL_MODE
+              value: "{{ .Values.mqtt.adapter.dbSSLMode }}"
+            - name: MF_MQTT_ADAPTER_DB_SSL_CERT
+              value: "{{ .Values.mqtt.adapter.dbSSLCert }}"
+            - name: MF_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.authGrpcPort }}
           livenessProbe:
             failureThreshold: 3
             httpGet:
