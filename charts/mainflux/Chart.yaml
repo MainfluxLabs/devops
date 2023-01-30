@@ -50,6 +50,7 @@ dependencies:
     version: "10.2.3"
     repository: "@bitnami"
     alias: postgresqlketo
+    condition: postgresqlketo.enabled
   - name: postgresql
     version: "10.2.3"
     repository: "@bitnami"
