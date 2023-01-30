@@ -89,6 +89,10 @@ mqtt:
       repository: "mainflux/vernemq"
     mqttPort: 1883
     wsPort: 8080
+    httpPort: 8285
+    dbPort: 5432
+    sslMode: false
+    sslCert: ""
     logLevel: "info"
     persistentVolume:
       size: 5Gi
@@ -270,6 +274,20 @@ postgresqlcerts:
       cpu: 25m
   persistence:
     size: 1Gi
+
+postgresqlmqtt:
+  ## If you want to use an external database, set this to false and change postgresqlHost
+  enabled: false
+  name: postgresql-mqtt
+  postgresqlHost: mqtt-db
+  postgresqlUsername: mainflux
+  postgresqlPassword: mainflux
+  postgresqlDatabase: subscriptions
+  resources:
+    requests:
+      cpu: 25m
+  persistence:
+    size: 1Gi   
 
 postgresqlnotifiersmtp:
   ## If you want to use an external database, set this to false and change postgresqlHost
