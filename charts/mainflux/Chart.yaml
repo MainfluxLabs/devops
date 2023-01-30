@@ -50,7 +50,11 @@ dependencies:
     version: "10.2.3"
     repository: "@bitnami"
     alias: postgresqlketo
-    condition: postgresqlketo.enabled
+  - name: postgresql
+    version: "10.2.3"
+    repository: "@bitnami"
+    alias: postgresqlmqtt
+    condition: postgresqlmqtt.enabled
   - name: redis
     version: "12.6.2"
     repository: "@bitnami"
