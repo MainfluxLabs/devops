@@ -83,9 +83,9 @@ spec:
           ports:
             - containerPort: {{ .Values.certs.httpPort }}
               protocol: TCP
-      {{- with .Values.defaults.image.imagePullSecrets }}
+      {{- if .Values.defaults.image.pullSecret }}
       imagePullSecrets:
-        {{- toYaml . | nindent 12 }}
+        - name: "{{ .Values.defaults.image.pullSecret }}"
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

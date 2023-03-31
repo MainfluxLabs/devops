@@ -4,13 +4,12 @@
 defaults:
   logLevel: "info"
   image:
-    pullPolicy: "IfNotPresent"
-    repository: "mainflux"
-    tag: "latest"
-    imagePullSecrets:
-      - {}
+    pullPolicy: "Always"
+    repository: "mainfluxlabs"
+    tag: "0.14.4"
+    pullSecret: ""
   # Replicas of MQTT adapter, NATS, Things, Envoy and Auth
-  replicaCount: 3
+  replicaCount: 1
   natsPort: 4222
   jaegerPort: 6831
 
@@ -19,7 +18,7 @@ ingress:
   annotations: {}
   labels: {}
   # Uncomment this block for TLS support in public ingress
-  # hostname: ""
+  hostname: "mainflux.eu.org"
   # tls:
   #   hostname: ""
   #   secret: "mainflux-server"
@@ -39,6 +38,7 @@ adapter_http:
   httpPort: 8185
 
 adapter_coap:
+  enabled: false
   image: {}
   port: 5683
 
@@ -80,19 +80,21 @@ mqtt:
     fsGroup: 10000
   adapter:
     image:
-      repository: "mainflux/mqtt"
+      repository: "mainfluxlabs/mqtt"
     mqttPort: 1884
     wsPort: 8081
-    logLevel: "debug"
-  broker:
-    image:
-      repository: "mainflux/vernemq"
-    mqttPort: 1883
-    wsPort: 8080
     httpPort: 8285
     dbPort: 5432
     sslMode: false
     sslCert: ""
+    logLevel: "debug"
+    dbPort: 5432
+  broker:
+    image:
+      repository: "mainfluxlabs/vernemq"
+      tag: "0.13.2"
+    mqttPort: 1883
+    wsPort: 8080
     logLevel: "info"
     persistentVolume:
       size: 5Gi
@@ -135,7 +137,7 @@ certs:
   dbPort: 5432
   httpPort: 8204
   logLevel: "info"
-  sdkThingsPrefix: ""  
+  sdkThingsPrefix: ""
   encryptKey: ""
   clientTLS: ""
   serverCert: ""
@@ -144,10 +146,21 @@ certs:
   signCAKeyPath: "/etc/ssl/certs/ca.key"
   signHoursValid: "2048h"
   signRSABits: 2048
-  signVaultToken: ""
-  signVaultHost: ""
+  signVaultToken: "hvs.NLNSOryTzRMh632z8iCQJmpI"
+  signVaultHost: "http://vault:8200"
   signVaultPKIPath: "pki_int"
-  signVaultRole: "agent"
+  signVaultRole: "mainflux"
+
+filestore:
+  image: {}
+  enabled: false
+  dbPort: 5432
+  httpPort: 9022
+  secret: "secret"
+  serverCert: ""
+  serverKey: ""
+  clientTLS: false
+  dbSSLCert: ""
 
 ui:
   image: {}
@@ -158,7 +171,10 @@ ui:
   wsUrl: "ws://localhost/mqtt"
 
 influxdb:
-  enabled: false
+  enabled: true
+  uiSubdomain: "influxdb"
+  persistence:
+    enabled: true
   dbPort: 8086
   writer:
     image: {}
@@ -167,13 +183,14 @@ influxdb:
     image: {}
     httpPort: 8905
   database: "mainflux"
-  authEnabled: true
-  adminUser:
-    name: "mainflux"
-    pwd: "mainflux"
+  auth:
+    admin:
+      bucket: "mainflux-bucket"
+      token: "mainflux-token"
+      username: "mainflux"
+      password: "mainflux"
+      org: "mainflux-org"
   configPath: "/config.toml"
-  contentType: "application/senml+json"
-  transformer: "senml"
   backup:
     enabled: false
     cronjob:
@@ -209,137 +226,177 @@ postgresqlusers:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: true
   name: postgresql-users
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: users
   resources:
     requests:
       cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "users"
 
 postgresqlthings:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: true
   name: postgresql-things
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: things
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "things"
 
 postgresqlauth:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: true
   name: postgresql-auth
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: auth
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "auth"
 
 postgresqlbootstrap:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: false
   name: postgresql-bootstrap
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: bootstrap
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "bootstrap"
 
 postgresqlcerts:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: false
   name: postgresql-certs
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: certs
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "certs"
 
 postgresqlmqtt:
   ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: false
+  enabled: true
   name: postgresql-mqtt
-  postgresqlHost: mqtt-db
-  postgresqlUsername: mainflux
-  postgresqlPassword: mainflux
-  postgresqlDatabase: subscriptions
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi   
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "subscriptions"
 
 postgresqlnotifiersmtp:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: false
   name: postgresql-notifier-smtp
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: subscriptions
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "subscriptions"
+
+postgresqlfilestore:
+  ## If you want to use an external database, set this to false and change postgresqlHost
+  enabled: false
+  name: postgresql-filestore
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "filestore"
 
 redis-streams:
-  volumePermissions:
-    enabled: true
+  auth:
+    enabled: false
+  replica:
+    replicaCount: 0
   cluster:
     enabled: false
-  usePassword: false
-
-redis-mqtt:
-  volumePermissions:
-    enabled: true
-  cluster:
-    enabled: false
-  usePassword: false
+  master:
+    persistence:
+      enabled: false
+    size: 1Gi
 
 redis-auth:
+  auth:
+    enabled: false
+  replica:
+    replicaCount: 0
   cluster:
     enabled: false
-  usePassword: false
   master:
     persistence:
       enabled: false
+    size: 1Gi
 
 redis-opcua:
+  auth:
+    enabled: false
+  replica:
+    replicaCount: 0
   cluster:
     enabled: false
-  usePassword: false
   master:
     persistence:
       enabled: false
+    size: 1Gi
 
 redis-lora:
+  auth:
+    enabled: false
+  replica:
+    replicaCount: 0
   cluster:
     enabled: false
-  usePassword: false
   master:
     persistence:
       enabled: false
+    size: 1Gi
 
 jaeger-operator:
   jaeger:
@@ -374,9 +431,9 @@ nginx_internal:
 
 # All options for loki-stack: https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
 loki-stack:
-  enabled: true
+  enabled: false
   loki:
-    enabled: false
+    enabled: true
     persistence:
       enabled: true
   promtail:
@@ -384,53 +441,44 @@ loki-stack:
   fluent-bit:
     enabled: false
   grafana:
-    enabled: true
+    enabled: false
     sidecar:
       datasources:
         enabled: true
-    image:
-      tag: 8.1.6
-    grafana.ini:
-      server:
-        domain: example.com
-        root_url: "%(protocol)s://%(domain)s/grafana"
-        serve_from_sub_path: true
-    ingress:
-      enabled: true
-      hosts:
-        - "example.com"
-      path: "/grafana"
     persistence:
-      enabled: false
+      enabled: true
       size: 3Gi
+    ingress:
+      enabled: false
   prometheus:
     enabled: false
-keto:
-  image:
-    tag: "v0.7.0"
-  keto:
-    config:
-      namespaces:
-        - id: 0
-          name: members
-      dsn: "postgresql://postgres:mainflux@mainflux-postgresqlketo:5432/keto?sslmode=disable"
-    autoMigrate: true
 
-postgresqlketo:
-  ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: true
-  name: postgresql-keto
-  postgresqlHost: localhost
-  postgresqlUsername: postgres
-  postgresqlPassword: mainflux
-  postgresqlDatabase: keto
-  resources:
-    requests:
-      cpu: 25m
+grafana:
+  enabled: false
   persistence:
-    size: 1Gi
-  commonAnnotations:
-    helm.sh/hook-weight: "-1"
-    helm.sh/hook: "pre-install, pre-upgrade"
-    helm.sh/hook-delete-policy: "before-hook-creation"
-
+    enabled: true
+    size: 3Gi
+  service:
+    port: 3002
+  plugins:
+    - grafana-worldmap-panel
+  grafana.ini:
+    server:
+      domain: "flflux.io"
+      root_url: '%(protocol)s://%(domain)s/grafana'
+      serve_from_sub_path: true
+    security:
+      disable_initial_admin_creation: true
+      cookie_secure: false
+    users:
+      auto_assign_org: true
+      auto_assign_org_role: Admin
+    auth:
+      disable_signout_menu: false
+      oauth_auto_login: false
+    auth.proxy:
+        enabled: true
+    image:
+      tag: 8.1.6
+  prometheus:
+    enabled: false

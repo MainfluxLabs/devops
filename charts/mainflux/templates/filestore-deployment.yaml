@@ -1,0 +1,85 @@
+# Copyright (c) Mainflux
+# SPDX-License-Identifier: Apache-2.0
+
+
+{{- if .Values.filestore.enabled }}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-filestore
+spec:
+  replicas: {{ .Values.defaults.replicaCount }}
+  serviceName: {{ .Release.Name }}-filestore
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+      component: filestore
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: filestore
+    spec:
+      containers:
+        - env:
+            - name: MF_FILESTORE_LOG_LEVEL
+              value: debug
+            - name: MF_FILESTORE_HTTP_PORT
+              value: "{{ .Values.filestore.httpPort }}"
+            - name: MF_FILESTORE_SECRET
+              value: "{{ .Values.filestore.secret }}"
+            - name: MF_FILESTORE_SERVER_CERT
+              value: "{{ .Values.filestore.serverCert }}"
+            - name: MF_FILESTORE_SERVER_KEY
+              value: "{{ .Values.filestore.serverKey }}"
+            - name: MF_FILESTORE_CLIENT_TLS
+              value: "{{ .Values.filestore.clientTLS }}"
+            - name: MF_FILESTORE_DB
+              value: "{{ .Values.postgresqlfilestore.auth.database }}"
+            - name: MF_FILESTORE_DB_HOST
+              {{- if .Values.postgresqlfilestore.enabled }}
+              value: {{ .Release.Name }}-postgresqlfilestore
+              {{- else }}
+              value: "{{ .Values.postgresqlfilestore.postgresqlHost }}"
+              {{- end }}
+            - name: MF_FILESTORE_DB_USER
+              value: "{{ .Values.postgresqlfilestore.auth.username  }}"
+            - name: MF_FILESTORE_DB_PASS
+              value: "{{ .Values.postgresqlfilestore.auth.postgresPassword  }}"
+            - name: MF_FILESTORE_DB_PORT
+              value: "{{ .Values.filestore.dbPort }}"
+            - name: MF_FILESTORE_DB_SSL_MODE
+              value: disable
+            - name: MF_FILESTORE_DB_SSL_CERT
+              value: "{{ .Values.filestore.dbSSLCert }}"
+            - name: MF_THINGS_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.things.authGrpcPort }}
+            - name: MF_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.auth.grpcPort }}
+            - name: MF_JAEGER_URL
+              value: {{ .Release.Name }}-jaeger-operator-jaeger-agent:{{ .Values.defaults.jaegerPort }}
+          image: "{{ default .Values.defaults.image.repository .Values.filestore.image.repository }}/filestore:{{ default .Values.defaults.image.tag .Values.filestore.image.tag }}"
+          imagePullPolicy: {{ default .Values.defaults.image.pullPolicy .Values.filestore.image.pullPolicy }}
+          name: {{ .Release.Name }}-filestore
+          ports:
+              - containerPort: {{ .Values.filestore.httpPort }}
+                protocol: TCP
+          volumeMounts:
+            - name: filestore-pv
+              mountPath: /files
+      {{- if .Values.defaults.image.pullSecret }}
+      imagePullSecrets:
+        - name: "{{ .Values.defaults.image.pullSecret }}"
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: filestore-pv
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+{{- end }}

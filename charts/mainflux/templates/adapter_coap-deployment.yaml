@@ -1,6 +1,7 @@
 # Copyright (c) Mainflux
 # SPDX-License-Identifier: Apache-2.0
 
+{{- if .Values.adapter_coap.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +21,7 @@ spec:
         - env:
             - name: MF_JAEGER_URL
               value: {{ .Release.Name }}-jaeger-operator-jaeger-agent:{{ .Values.defaults.jaegerPort }}
-            - name: MF_NATS_URL
+            - name: MF_BROKER_URL
               value: nats://{{ .Release.Name }}-nats-client:{{ .Values.defaults.natsPort }}
             - name: MF_THINGS_AUTH_GRPC_URL
               value: {{ .Release.Name }}-envoy:{{ .Values.things.authGrpcPort }}
@@ -40,9 +41,10 @@ spec:
               protocol: TCP
           stdin: true
           tty: true
-      {{- with .Values.defaults.image.imagePullSecrets }}
+      {{- if .Values.defaults.image.pullSecret }}
       imagePullSecrets:
-        {{- toYaml . | nindent 12 }}
+        - name: "{{ .Values.defaults.image.pullSecret }}"
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+{{- end }}
