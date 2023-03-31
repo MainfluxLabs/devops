@@ -22,80 +22,78 @@ dependencies:
     version: "4.3.7"
     repository: "@stable"
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlthings
     condition: postgresqlthings.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlusers
     condition: postgresqlusers.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlauth
     condition: postgresqlauth.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlbootstrap
     condition: postgresqlbootstrap.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlcerts
     condition: postgresqlcerts.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
     repository: "@bitnami"
-    alias: postgresqlketo
-    condition: postgresqlketo.enabled
+    alias: postgresqlnotifiersmtp
+    condition: postgresqlnotifiersmtp.enabled
   - name: postgresql
-    version: "10.2.3"
+    version: "11.8.1"
+    repository: "@bitnami"
+    alias: postgresqlfilestore
+    condition: postgresqlfilestore.enabled
+  - name: postgresql
+    version: "11.8.1"
     repository: "@bitnami"
     alias: postgresqlmqtt
     condition: postgresqlmqtt.enabled
   - name: redis
-    version: "12.6.2"
+    version: "17.1.2"
     repository: "@bitnami"
     alias: redis-streams
   - name: redis
-    version: "12.6.2"
+    version: "17.1.2"
     repository: "@bitnami"
     alias: redis-auth
   - name: redis
-    version: "12.6.2"
-    repository: "@bitnami"
-    alias: redis-mqtt
-  - name: redis
-    version: "12.6.2"
+    version: "17.1.2"
     repository: "@bitnami"
     alias: redis-opcua
     condition: adapter_opcua.enabled
   - name: redis
-    version: "12.6.2"
+    version: "17.1.2"
     repository: "@bitnami"
     alias: redis-lora
     condition: adapter_lora.enabled
   - name: influxdb
-    version: "1.1.9"
+    version: "5.4.1"
     repository: "@bitnami"
     condition: influxdb.enabled
   - name: mongodb
-    version: "10.4.1"
+    version: "13.1.1"
     repository: "@bitnami"
     alias: twins-db
     condition: twins.enabled
-  - name: postgresql
-    version: "10.2.3"
-    repository: "@bitnami"
-    alias: postgresqlnotifiersmtp
-    condition: postgresqlnotifiersmtp.enabled
   - name: loki-stack
     version: "2.5.0"
     repository: "@grafana"
     condition: loki-stack.enabled
-  - name: keto
-    version: "0.21.7"
-    repository: "@ory"
+  - name: grafana
+    alias: "grafana"
+    repository: "@grafana"
+    version: "6.33.0"
+    condition: grafana.enabled

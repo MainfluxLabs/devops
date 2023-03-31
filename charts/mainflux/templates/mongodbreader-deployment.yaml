@@ -23,6 +23,8 @@ spec:
               value: debug
             - name: MF_THINGS_AUTH_GRPC_URL
               value: {{ .Release.Name }}-envoy:{{ .Values.things.authGrpcPort }}
+            - name: MF_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.auth.grpcPort }}
             - name: MF_MONGO_READER_PORT
               value: "{{ .Values.mongodb.reader.httpPort }}"
             - name: MF_MONGO_READER_DB
@@ -45,9 +47,9 @@ spec:
               protocol: TCP
           stdin: true
           tty: true
-      {{- with .Values.defaults.image.imagePullSecrets }}
+      {{- if .Values.defaults.image.pullSecret }}
       imagePullSecrets:
-        {{- toYaml . | nindent 12 }}
+        - name: "{{ .Values.defaults.image.pullSecret }}"
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

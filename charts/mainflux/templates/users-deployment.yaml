@@ -36,7 +36,7 @@ spec:
             - name: MF_JAEGER_URL
               value: {{ .Release.Name }}-jaeger-operator-jaeger-agent:{{ .Values.defaults.jaegerPort }}
             - name: MF_USERS_DB
-              value: {{ .Values.postgresqlusers.postgresqlDatabase | quote }}
+              value: {{ .Values.postgresqlusers.auth.database | quote }}
             - name: MF_USERS_DB_HOST
             {{- if .Values.postgresqlusers.enabled }}
               value: {{ .Release.Name }}-postgresqlusers
@@ -44,11 +44,11 @@ spec:
               value: {{ .Values.postgresqlusers.postgresqlHost | quote }}
             {{- end }}
             - name: MF_USERS_DB_PASS
-              value: {{ .Values.postgresqlusers.postgresqlPassword | quote }}
+              value: {{ .Values.postgresqlusers.auth.postgresPassword | quote }}
             - name: MF_USERS_DB_PORT
               value: "{{ .Values.users.dbPort }}"
             - name: MF_USERS_DB_USER
-              value: {{ .Values.postgresqlusers.postgresqlUsername | quote }}
+              value: {{ .Values.postgresqlusers.auth.username | quote }}
             - name: MF_USERS_HTTP_PORT
               value: "{{ .Values.users.httpPort }}"
             - name: MF_USERS_LOG_LEVEL
@@ -71,9 +71,9 @@ spec:
             - mountPath: /email.tmpl
               name: users-config
               subPath: email.tmpl
-      {{- with .Values.defaults.image.imagePullSecrets }}
+      {{- if .Values.defaults.image.pullSecret }}
       imagePullSecrets:
-        {{- toYaml . | nindent 12 }}
+        - name: "{{ .Values.defaults.image.pullSecret }}"
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
