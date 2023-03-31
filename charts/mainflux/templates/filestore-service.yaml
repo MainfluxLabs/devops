@@ -1,0 +1,17 @@
+# Copyright (c) Mainflux
+# SPDX-License-Identifier: Apache-2.0
+
+{{- if .Values.filestore.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-filestore
+spec:
+  selector:
+    app: {{ .Release.Name }}
+    component: filestore
+  ports:
+    - port: {{ .Values.filestore.httpPort }}
+      protocol: TCP
+      name: {{ .Release.Name }}-filestore-{{ .Values.filestore.httpPort }}
+{{- end }}

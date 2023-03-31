@@ -5,7 +5,7 @@ Helm Chart for the Mainflux IoT Platform
 ## Prerequisites
 
 - Helm v3
-- Stable & Bitnami Helm repos installed 
+- Stable & Bitnami Helm repos installed
   ```
   helm repo add stable https://charts.helm.sh/stable
   helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -41,7 +41,7 @@ The following table lists the configurable parameters and their default values.
 | auth.dbPort                          | Auth service DB port                                                       | 5432         |
 | auth.grpcPort                        | Auth service gRPC port                                                     | 8181         |
 | auth.httpPort                        | Auth service HTTP port                                                     | 8189         |
-| auth.secret                          | String used for signing tokens                                             | secret       |	
+| auth.secret                          | String used for signing tokens                                             | secret       |
 | users.dbPort                         | Users service DB port                                                      | 5432         |
 | users.httpPort                       | Users service HTTP port                                                    | 8180         |
 | things.dbPort                        | Things service DB port                                                     | 5432         |

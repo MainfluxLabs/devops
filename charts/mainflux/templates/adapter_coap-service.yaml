@@ -1,6 +1,7 @@
 # Copyright (c) Mainflux
 # SPDX-License-Identifier: Apache-2.0
 
+{{- if .Values.adapter_coap.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,3 +17,4 @@ spec:
     - port: {{ .Values.adapter_coap.port }}
       protocol: TCP
       name: "tcp-{{ .Values.adapter_coap.port }}"
+{{- end }}

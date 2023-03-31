@@ -20,7 +20,7 @@ data:
     # To subscribe to specific subjects use values starting by "channels." and
     # followed by a subtopic (e.g ["channels.<channel_id>.sub.topic.x", ...]).
     [subjects]
-    filter = ["channels.>"]    
+    filter = ["channels.>"]
 ---
 
 apiVersion: apps/v1
@@ -44,7 +44,7 @@ spec:
       tolerations:
         - key: "node-role.kubernetes.io/master"
           effect: "NoSchedule"
-          operator: "Exists"        
+          operator: "Exists"
       containers:
         - env:
             - name: MF_EMAIL_USERNAME
@@ -54,13 +54,13 @@ spec:
             - name: MF_EMAIL_PASSWORD
               value: "{{ .Values.notifier_smtp.password }}"
             - name: MF_EMAIL_SECRET
-              value: "{{ .Values.notifier_smtp.secret }}"              
+              value: "{{ .Values.notifier_smtp.secret }}"
             - name: MF_EMAIL_FROM_NAME
               value: "{{ .Values.notifier_smtp.fromName }}"
             - name: MF_EMAIL_FROM_ADDRESS
               value: "{{ .Values.notifier_smtp.fromEmail }}"
             - name: MF_SMTP_NOTIFIER_FROM_ADDR
-              value: "{{ .Values.notifier_smtp.fromEmail }}"              
+              value: "{{ .Values.notifier_smtp.fromEmail }}"
             - name: MF_EMAIL_PORT
               value: "{{ .Values.notifier_smtp.smtpPort }}"
             - name: MF_EMAIL_HOST
@@ -86,9 +86,9 @@ spec:
             - name: MF_SMTP_NOTIFIER_LOG_LEVEL
               value: {{ default .Values.defaults.logLevel .Values.notifier_smtp.logLevel }}
             - name: MF_AUTH_GRPC_URL
-              value: {{ .Release.Name }}-envoy:{{ .Values.authn.grpcPort }} 
-            - name: MF_NATS_URL
-              value: nats://{{ .Release.Name }}-nats-client:{{ .Values.defaults.natsPort }}                                      
+              value: {{ .Release.Name }}-envoy:{{ .Values.authn.grpcPort }}
+            - name: MF_BROKER_URL
+              value: nats://{{ .Release.Name }}-nats-client:{{ .Values.defaults.natsPort }}
           image: "{{ default .Values.defaults.image.repository .Values.notifier_smtp.image.repository }}/smtp-notifier:{{ default .Values.defaults.image.tag .Values.notifier_smtp.image.tag }}"
           imagePullPolicy: {{ default .Values.defaults.image.pullPolicy .Values.notifier_smtp.image.pullPolicy }}
           name: {{ .Release.Name }}-notifier-smtp
@@ -101,15 +101,15 @@ spec:
               subPath: email.tmpl
             - mountPath: /smtp-notifier.tmpl
               name: email-notifier-config
-              subPath: email.tmpl              
+              subPath: email.tmpl
             - mountPath: /config.toml
               name: email-notifier-config
               subPath: config.toml
           stdin: true
           tty: true
-      {{- with .Values.defaults.image.imagePullSecrets }}
+      {{- if .Values.defaults.image.pullSecret }}
       imagePullSecrets:
-        {{- toYaml . | nindent 12 }}
+        - name: "{{ .Values.defaults.image.pullSecret }}"
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
