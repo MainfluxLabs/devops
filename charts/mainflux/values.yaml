@@ -152,8 +152,8 @@ certs:
   signVaultRole: "mainflux"
 
 filestore:
-  image: {}
   enabled: false
+  image: {}
   dbPort: 5432
   httpPort: 9022
   secret: "secret"
