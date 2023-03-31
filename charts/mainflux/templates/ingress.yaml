@@ -4,8 +4,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-{{- if .Values.ingress.annotations }}
   annotations:
+{{- if .Values.ingress.annotations }}
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.labels }}
@@ -33,6 +33,16 @@ spec:
                 name: {{ .Release.Name }}-things
                 port:
                   number: {{ .Values.things.httpPort }}
+    - host: {{ .Values.influxdb.uiSubdomain }}.{{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-influxdb
+                port:
+                  number: {{ .Values.influxdb.dbPort }}
 {{- if .Values.ingress.tls }}
   tls:
     - hosts:

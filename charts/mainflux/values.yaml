@@ -6,7 +6,7 @@ defaults:
   image:
     pullPolicy: "Always"
     repository: "mainfluxlabs"
-    tag: "0.14.1"
+    tag: "0.14.4"
     pullSecret: ""
   # Replicas of MQTT adapter, NATS, Things, Envoy and Auth
   replicaCount: 1
@@ -88,7 +88,6 @@ mqtt:
     sslMode: false
     sslCert: ""
     logLevel: "debug"
-    httpPort: 8285
     dbPort: 5432
   broker:
     image:
@@ -96,10 +95,6 @@ mqtt:
       tag: "0.13.2"
     mqttPort: 1883
     wsPort: 8080
-    httpPort: 8285
-    dbPort: 5432
-    sslMode: false
-    sslCert: ""
     logLevel: "info"
     persistentVolume:
       size: 5Gi
@@ -157,7 +152,7 @@ certs:
   signVaultRole: "mainflux"
 
 filestore:
-  enabled: true
+  enabled: false
   image: {}
   dbPort: 5432
   httpPort: 9022
@@ -177,6 +172,7 @@ ui:
 
 influxdb:
   enabled: true
+  uiSubdomain: "influxdb"
   persistence:
     enabled: true
   dbPort: 8086
@@ -322,20 +318,6 @@ postgresqlmqtt:
     password: "mainflux"
     database: "subscriptions"
 
-postgresqlmqtt:
-  ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: false
-  name: postgresql-mqtt
-  postgresqlHost: mqtt-db
-  postgresqlUsername: mainflux
-  postgresqlPassword: mainflux
-  postgresqlDatabase: subscriptions
-  resources:
-    requests:
-      cpu: 25m
-  persistence:
-    size: 1Gi   
-
 postgresqlnotifiersmtp:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: false
@@ -354,7 +336,7 @@ postgresqlnotifiersmtp:
 
 postgresqlfilestore:
   ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: true
+  enabled: false
   name: postgresql-filestore
   primary:
     persistence:
@@ -451,7 +433,7 @@ nginx_internal:
 loki-stack:
   enabled: false
   loki:
-    enabled: false
+    enabled: true
     persistence:
       enabled: true
   promtail:
@@ -459,7 +441,7 @@ loki-stack:
   fluent-bit:
     enabled: false
   grafana:
-    enabled: true
+    enabled: false
     sidecar:
       datasources:
         enabled: true
@@ -482,34 +464,21 @@ grafana:
     - grafana-worldmap-panel
   grafana.ini:
     server:
-      domain: ""
+      domain: "flflux.io"
       root_url: '%(protocol)s://%(domain)s/grafana'
       serve_from_sub_path: true
     security:
-      disable_initial_admin_creation: false
-      cookie_secure: true
+      disable_initial_admin_creation: true
+      cookie_secure: false
     users:
       auto_assign_org: true
       auto_assign_org_role: Admin
     auth:
-      disable_signout_menu: true
+      disable_signout_menu: false
       oauth_auto_login: false
     auth.proxy:
         enabled: true
     image:
       tag: 8.1.6
-    grafana.ini:
-      server:
-        domain: example.com
-        root_url: "%(protocol)s://%(domain)s/grafana"
-        serve_from_sub_path: true
-    ingress:
-      enabled: true
-      hosts:
-        - "example.com"
-      path: "/grafana"
-    persistence:
-      enabled: false
-      size: 3Gi
   prometheus:
     enabled: false
