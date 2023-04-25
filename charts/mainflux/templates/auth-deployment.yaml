@@ -45,6 +45,10 @@ spec:
               value: "{{ .Values.auth.secret }}"
             - name: MF_USERS_ADMIN_EMAIL
               value: "{{ .Values.users.adminEmail }}"
+            - name: MF_USERS_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.users.grpcPort }}
+            - name: MF_THINGS_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.things.authGrpcPort }}
           image: "{{ default .Values.defaults.image.repository .Values.auth.image.repository }}/auth:{{ default .Values.defaults.image.tag .Values.auth.image.tag }}"
           imagePullPolicy: {{ default .Values.defaults.image.pullPolicy .Values.users.image.pullPolicy }}
           name: {{ .Release.Name }}-auth

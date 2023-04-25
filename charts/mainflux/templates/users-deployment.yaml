@@ -51,6 +51,8 @@ spec:
               value: {{ .Values.postgresqlusers.auth.username | quote }}
             - name: MF_USERS_HTTP_PORT
               value: "{{ .Values.users.httpPort }}"
+            - name: MF_USERS_GRPC_PORT
+              value: "{{ .Values.users.grpcPort }}"
             - name: MF_USERS_LOG_LEVEL
               value: {{ default .Values.defaults.logLevel .Values.users.logLevel }}
             - name: MF_AUTH_GRPC_URL
@@ -66,6 +68,8 @@ spec:
           name: {{ .Release.Name }}-users
           ports:
             - containerPort: {{ .Values.users.httpPort }}
+              protocol: TCP
+            - containerPort: {{ .Values.users.grpcPort }}
               protocol: TCP
           volumeMounts:
             - mountPath: /email.tmpl
