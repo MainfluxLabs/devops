@@ -40,6 +40,27 @@ data:
       - address:
           socket_address:
             address: 0.0.0.0
+            port_value: {{ .Values.users.grpcPort }}
+        filter_chains:
+        - filters:
+          - name: envoy.http_connection_manager
+            config:
+              codec_type: auto
+              stat_prefix: users
+              route_config:
+                name: users_route
+                virtual_hosts:
+                - name: users_service
+                  domains: ["*"]
+                  routes:
+                  - match: { prefix: "/" }
+                    route: { cluster: users }
+              http_filters:
+              - name: envoy.grpc_web
+              - name: envoy.router
+      - address:
+          socket_address:
+            address: 0.0.0.0
             port_value: {{ .Values.things.authGrpcPort }}
         filter_chains:
         - filters:
@@ -76,6 +97,15 @@ data:
         - socket_address:
             address: {{ .Release.Name }}-auth-headless
             port_value: {{ .Values.auth.grpcPort }}
+      - name: users
+        connect_timeout: 0.25s
+        type: strict_dns
+        lb_policy: round_robin
+        http2_protocol_options: {}
+        hosts:
+        - socket_address:
+            address: {{ .Release.Name }}-users-headless
+            port_value: {{ .Values.users.grpcPort }}
       - name: things
         connect_timeout: 0.25s
         type: strict_dns
@@ -121,6 +151,8 @@ spec:
               protocol: TCP
             - containerPort: {{ .Values.auth.grpcPort }}
               protocol: TCP
+            - containerPort: {{ .Values.users.grpcPort }}
+              protocol: TCP
             - containerPort: {{ .Values.things.authGrpcPort }}
               protocol: TCP
             - containerPort: 8001
@@ -154,6 +186,9 @@ spec:
     - port: {{ .Values.things.authGrpcPort }}
       protocol: TCP
       name: things-grpc
+    - port: {{ .Values.users.grpcPort }}
+      protocol: TCP
+      name: users-grpc
     - port: 8001
       protocol: TCP
       name: admin
