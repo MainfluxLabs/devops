@@ -6,7 +6,7 @@ defaults:
   image:
     pullPolicy: "Always"
     repository: "mainfluxlabs"
-    tag: "0.14.4"
+    tag: "0.15.0"
     pullSecret: ""
   # Replicas of MQTT adapter, NATS, Things, Envoy and Auth
   replicaCount: 1
@@ -97,7 +97,7 @@ mqtt:
     wsPort: 8080
     logLevel: "info"
     persistentVolume:
-      size: 5Gi
+      size: 1Gi
   redisESPort: 6379
   redisCachePort: 6379
 
@@ -153,7 +153,7 @@ certs:
   signVaultRole: "mainflux"
 
 filestore:
-  enabled: false
+  enabled: true
   image: {}
   dbPort: 5432
   httpPort: 9022
@@ -337,7 +337,7 @@ postgresqlnotifiersmtp:
 
 postgresqlfilestore:
   ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: false
+  enabled: true
   name: postgresql-filestore
   primary:
     persistence:
@@ -429,57 +429,3 @@ nginx_internal:
     pullPolicy: "IfNotPresent"
     repository: "nginx"
     tag: "1.19.1-alpine"
-
-# All options for loki-stack: https://github.com/grafana/helm-charts/tree/main/charts/loki-stack
-loki-stack:
-  enabled: false
-  loki:
-    enabled: true
-    persistence:
-      enabled: true
-  promtail:
-    enabled: false
-  fluent-bit:
-    enabled: false
-  grafana:
-    enabled: false
-    sidecar:
-      datasources:
-        enabled: true
-    persistence:
-      enabled: true
-      size: 3Gi
-    ingress:
-      enabled: false
-  prometheus:
-    enabled: false
-
-grafana:
-  enabled: false
-  persistence:
-    enabled: true
-    size: 3Gi
-  service:
-    port: 3002
-  plugins:
-    - grafana-worldmap-panel
-  grafana.ini:
-    server:
-      domain: "flflux.io"
-      root_url: '%(protocol)s://%(domain)s/grafana'
-      serve_from_sub_path: true
-    security:
-      disable_initial_admin_creation: true
-      cookie_secure: false
-    users:
-      auto_assign_org: true
-      auto_assign_org_role: Admin
-    auth:
-      disable_signout_menu: false
-      oauth_auto_login: false
-    auth.proxy:
-        enabled: true
-    image:
-      tag: 8.1.6
-  prometheus:
-    enabled: false
