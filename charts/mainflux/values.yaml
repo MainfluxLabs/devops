@@ -6,7 +6,7 @@ defaults:
   image:
     pullPolicy: "Always"
     repository: "mainfluxlabs"
-    tag: "0.15.0"
+    tag: "0.15.2"
     pullSecret: ""
   # Replicas of MQTT adapter, NATS, Things, Envoy and Auth
   replicaCount: 1
