@@ -83,9 +83,6 @@ spec:
             - mountPath: /smtp-notifier.tmpl
               name: email-notifier-config
               subPath: email.tmpl
-            - mountPath: /config.toml
-              name: email-notifier-config
-              subPath: config.toml
           stdin: true
           tty: true
       {{- if .Values.defaults.image.pullSecret }}
