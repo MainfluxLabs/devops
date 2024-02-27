@@ -67,22 +67,6 @@ spec:
               value: "{{ .Values.notifier_smtp.emailHost }}"
             - name: MF_JAEGER_URL
               value: {{ .Release.Name }}-jaeger-operator-jaeger-agent:{{ .Values.defaults.jaegerPort }}
-            - name: MF_SMTP_NOTIFIER_DB
-              value: {{ .Values.postgresqlnotifiersmtp.postgresqlDatabase | quote }}
-            - name: MF_SMTP_NOTIFIER_DB_HOST
-            {{- if .Values.postgresqlnotifiersmtp.enabled }}
-              value: {{ .Release.Name }}-postgresqlnotifiersmtp
-            {{- else }}
-              value: {{ .Values.postgresqlnotifiersmtp.postgresqlHost | quote }}
-            {{- end }}
-            - name: MF_SMTP_NOTIFIER_DB_PASS
-              value: {{ .Values.postgresqlnotifiersmtp.postgresqlPassword | quote }}
-            - name: MF_SMTP_NOTIFIER_DB_PORT
-              value: "{{ .Values.notifier_smtp.dbPort }}"
-            - name: MF_SMTP_NOTIFIER_DB_USER
-              value: {{ .Values.postgresqlnotifiersmtp.postgresqlUsername | quote }}
-            - name: MF_SMTP_NOTIFIER_PORT
-              value: "{{ .Values.notifier_smtp.httpPort }}"
             - name: MF_SMTP_NOTIFIER_LOG_LEVEL
               value: {{ default .Values.defaults.logLevel .Values.notifier_smtp.logLevel }}
             - name: MF_AUTH_GRPC_URL
@@ -92,9 +76,6 @@ spec:
           image: "{{ default .Values.defaults.image.repository .Values.notifier_smtp.image.repository }}/smtp-notifier:{{ default .Values.defaults.image.tag .Values.notifier_smtp.image.tag }}"
           imagePullPolicy: {{ default .Values.defaults.image.pullPolicy .Values.notifier_smtp.image.pullPolicy }}
           name: {{ .Release.Name }}-notifier-smtp
-          ports:
-            - containerPort: {{ .Values.notifier_smtp.httpPort }}
-              protocol: TCP
           volumeMounts:
             - mountPath: /email.tmpl
               name: email-notifier-config

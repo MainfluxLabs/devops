@@ -123,15 +123,6 @@ spec:
                 port:
                   number: {{ .Values.mqtt.adapter.httpPort }}
 {{- end }}
-{{- if .Values.notifier_smtp.enabled }}
-          - path: /smtp-notifier/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-notifier-smtp
-                port:
-                  number: {{ .Values.notifier_smtp.httpPort }}
-{{- end }}
 {{- if .Values.bootstrap.enabled }}
           - path: /bootstrap/?(.*)
             pathType: Prefix

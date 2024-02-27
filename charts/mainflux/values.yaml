@@ -70,7 +70,6 @@ notifier_smtp:
   username: ""
   password: ""
   secret: ""
-  httpPort: 8906
 
 mqtt:
   enabled: true
@@ -307,22 +306,6 @@ postgresqlmqtt:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: true
   name: postgresql-mqtt
-  primary:
-    persistence:
-      size: 1Gi
-    resources:
-      requests:
-        cpu: 25m
-  auth:
-    postgresPassword: "mainflux"
-    username: "postgres"
-    password: "mainflux"
-    database: "subscriptions"
-
-postgresqlnotifiersmtp:
-  ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: false
-  name: postgresql-notifier-smtp
   primary:
     persistence:
       size: 1Gi

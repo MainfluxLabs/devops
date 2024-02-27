@@ -49,11 +49,6 @@ dependencies:
   - name: postgresql
     version: "11.8.1"
     repository: "@bitnami"
-    alias: postgresqlnotifiersmtp
-    condition: postgresqlnotifiersmtp.enabled
-  - name: postgresql
-    version: "11.8.1"
-    repository: "@bitnami"
     alias: postgresqlfilestore
     condition: postgresqlfilestore.enabled
   - name: postgresql
