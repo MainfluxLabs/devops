@@ -10,7 +10,4 @@ spec:
   selector:
     app: {{ .Release.Name }}
     component: notifier-smtp
-  ports:
-    - port: {{ .Values.notifier_smtp.httpPort }}
-      protocol: TCP
 {{- end }}

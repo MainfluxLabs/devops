@@ -82,7 +82,6 @@ The following table lists the configurable parameters and their default values.
 | notifier_smtp.username               | SMTP username                                                              | false        |
 | notifier_smtp.password               | SMTP password                                                              | false        |
 | notifier_smtp.secret                 | SMTP secret                                                                | false        |
-| notifier_smtp.httpPort               | SMTP notifier HTTP port                                                    | false        |
 | loki_stack.enabled                   | Enable Loki_Stack                                                          | true         |
 
 All Mainflux services (both core and add-ons) can have their `logLevel`, `image.pullPolicy`, `image.repository` and `image.tag` overridden.
