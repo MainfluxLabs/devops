@@ -70,9 +70,6 @@ The following table lists the configurable parameters and their default values.
 | influxdb.reader.httpPort             | InfluxDB reader HTTP port                                                  | 8905         |
 | influxdb.backup.enabled              | Enable InfluxDB backup                                                     | false        |
 | influxdb.backup.cronjob.schedule     | Crontab style time schedule for backup execution                           | "0 2 * * *"  |
-| adapter_lora.enabled                 | Enable LoRa adapter                                                        | false        |
-| adapter_lora.httpPort                | LoRa adapter HTTP port                                                     | 8187         |
-| adapter_lora.redisRouteMapPort       | LoRa adapter Redis Auth Cache port                                         | 6379         |
 | certs.enabled                        | Enable certs service                                                       | false        |
 | notifier_smtp.enabled                | Enable SMTP notifier                                                       | false        |
 | notifier_smtp.emailHost              | SMTP host                                                                  | false        |
@@ -102,7 +99,6 @@ List of add-ons services in charts:
 - bootstrap
 - influxdb.writer
 - influxdb.reader
-- adapter_lora
 - notifier_smtp
 
 By default scale of MQTT adapter, Things, Envoy, Auth and NATS will be set to 3. It's recommended that you set this values to number of your nodes in Kubernetes cluster, i.e. `--set defaults.replicaCount=3 --set nats.replicaCount=3`

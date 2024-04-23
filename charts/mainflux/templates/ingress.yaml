@@ -77,7 +77,21 @@ spec:
                 name: {{ .Release.Name }}-auth
                 port:
                   number: {{ .Values.auth.httpPort }}
+          - path: /svcauth/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-auth
+                port:
+                  number: {{ .Values.auth.httpPort }}
           - path: /(users.*|password.*|tokens.*|register.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-users
+                port:
+                  number: {{ .Values.users.httpPort }}
+          - path: /svcusers/?(.*)
             pathType: Prefix
             backend:
               service:
@@ -91,14 +105,14 @@ spec:
                 name: {{ .Release.Name }}-things
                 port:
                   number: {{ .Values.things.httpPort }}
-          - path: /files/?(.*)
+          - path: /svcthings/?(.*)
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-filestore
+                name: {{ .Release.Name }}-things
                 port:
-                  number: {{ .Values.filestore.httpPort }}
-          - path: /paths/?(.*)
+                  number: {{ .Values.things.httpPort }}
+          - path: /(files.*)
             pathType: Prefix
             backend:
               service:
@@ -122,6 +136,15 @@ spec:
                 name: {{ .Release.Name }}-mqtt
                 port:
                   number: {{ .Values.mqtt.adapter.httpPort }}
+{{- end }}
+{{- if .Values.notifier_smtp.enabled }}
+          - path: /smtp-notifier/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-notifier-smtp
+                port:
+                  number: {{ .Values.notifier_smtp.httpPort }}
 {{- end }}
 {{- if .Values.bootstrap.enabled }}
           - path: /bootstrap/?(.*)
@@ -147,24 +170,6 @@ spec:
                 name:  {{ .Release.Name }}-influxdb-reader
                 port:
                   number: {{ .Values.influxdb.reader.httpPort }}
-{{- end }}
-{{- if .Values.twins.enabled }}
-          - path: /(twins.*|states.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-twins
-                port:
-                  number: {{ .Values.twins.httpPort }}
-{{- end }}
-{{- if .Values.adapter_opcua.enabled }}
-          - path: /(browse.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-adapter-opcua
-                port:
-                  number: {{ default .Values.adapter_opcua.httpPort }}
 {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
