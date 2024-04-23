@@ -20,18 +20,6 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.8.1
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.8.1
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.8.1
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 17.1.2
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 17.1.2
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 17.1.2
@@ -41,8 +29,5 @@ dependencies:
 - name: influxdb
   repository: https://charts.bitnami.com/bitnami
   version: 5.4.1
-- name: mongodb
-  repository: https://charts.bitnami.com/bitnami
-  version: 13.1.1
-digest: sha256:06c6c9814926ef2847fb27b1c3a021cb3d7178f3333289993db6d0d6ce0e2474
-generated: "2023-05-10T14:36:23.784396+02:00"
+digest: sha256:d553f27302f907109aaf4d12f9c8179dfc01e90ebd02193f6e8455b426b9edb5
+generated: "2024-04-23T11:15:20.967851+02:00"

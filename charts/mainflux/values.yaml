@@ -6,7 +6,7 @@ defaults:
   image:
     pullPolicy: "Always"
     repository: "mainfluxlabs"
-    tag: "0.15.2"
+    tag: "0.19.0"
     pullSecret: ""
   # Replicas of MQTT adapter, NATS, Things, Envoy and Auth
   replicaCount: 1
@@ -18,7 +18,7 @@ ingress:
   annotations: {}
   labels: {}
   # Uncomment this block for TLS support in public ingress
-  hostname: "mainflux.eu.org"
+  hostname: "example.com"
   # tls:
   #   hostname: ""
   #   secret: "mainflux-server"
@@ -42,34 +42,17 @@ adapter_coap:
   image: {}
   port: 5683
 
-adapter_opcua:
-  enabled: false
-  image: {}
-  httpPort: 8188
-  policy: ""
-  mode: ""
-  certFile: ""
-  keyFile: ""
-  eventConsumer: "opcua"
-  redisRouteMapPort: 6379
-
-adapter_lora:
-  enabled: false
-  image: {}
-  httpPort: 8187
-  messageUrl: "tcp://lora.mqtt.mainflux.io:1883"
-  redisRouteMapPort: 6379
-
 notifier_smtp:
-  enabled: false
+  enabled: true
   image: {}
   emailHost: "smtp.example.com"
   smtpPort: 2525
   fromName: "Mainflux"
   fromEmail: "admin@example.com"
-  username: ""
-  password: ""
+  username: "mainflux"
+  password: "mainflux"
   secret: ""
+  httpPort: 8906
 
 mqtt:
   enabled: true
@@ -123,13 +106,6 @@ auth:
   grpcPort: 8181
   httpPort: 8189
   secret: "secret"
-
-bootstrap:
-  enabled: false
-  image: {}
-  dbPort: 5432
-  httpPort: 8182
-  redisESPort: 6379
 
 certs:
   enabled: false
@@ -270,22 +246,6 @@ postgresqlauth:
     password: "mainflux"
     database: "auth"
 
-postgresqlbootstrap:
-  ## If you want to use an external database, set this to false and change postgresqlHost
-  enabled: false
-  name: postgresql-bootstrap
-  primary:
-    persistence:
-      size: 1Gi
-    resources:
-      requests:
-        cpu: 25m
-  auth:
-    postgresPassword: "mainflux"
-    username: "postgres"
-    password: "mainflux"
-    database: "bootstrap"
-
 postgresqlcerts:
   ## If you want to use an external database, set this to false and change postgresqlHost
   enabled: false
@@ -358,48 +318,12 @@ redis-auth:
       enabled: false
     size: 1Gi
 
-redis-opcua:
-  auth:
-    enabled: false
-  replica:
-    replicaCount: 0
-  cluster:
-    enabled: false
-  master:
-    persistence:
-      enabled: false
-    size: 1Gi
-
-redis-lora:
-  auth:
-    enabled: false
-  replica:
-    replicaCount: 0
-  cluster:
-    enabled: false
-  master:
-    persistence:
-      enabled: false
-    size: 1Gi
-
 jaeger-operator:
   jaeger:
     create: true
   rbac:
     pspEnabled: true
     clusterRole: true
-
-twins:
-  enabled: false
-  image: {}
-  dbPort: 27017
-  httpPort: 9021
-  channelId: ""
-  redisCachePort: 6379
-
-twins-db:
-  auth:
-    enabled: false
 
 envoy:
   image:

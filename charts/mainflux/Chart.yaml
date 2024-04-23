@@ -39,11 +39,6 @@ dependencies:
   - name: postgresql
     version: "11.8.1"
     repository: "@bitnami"
-    alias: postgresqlbootstrap
-    condition: postgresqlbootstrap.enabled
-  - name: postgresql
-    version: "11.8.1"
-    repository: "@bitnami"
     alias: postgresqlcerts
     condition: postgresqlcerts.enabled
   - name: postgresql
@@ -64,22 +59,7 @@ dependencies:
     version: "17.1.2"
     repository: "@bitnami"
     alias: redis-auth
-  - name: redis
-    version: "17.1.2"
-    repository: "@bitnami"
-    alias: redis-opcua
-    condition: adapter_opcua.enabled
-  - name: redis
-    version: "17.1.2"
-    repository: "@bitnami"
-    alias: redis-lora
-    condition: adapter_lora.enabled
   - name: influxdb
     version: "5.4.1"
     repository: "@bitnami"
     condition: influxdb.enabled
-  - name: mongodb
-    version: "13.1.1"
-    repository: "@bitnami"
-    alias: twins-db
-    condition: twins.enabled
