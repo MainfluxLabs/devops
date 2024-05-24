@@ -60,10 +60,6 @@ The following table lists the configurable parameters and their default values.
 | mqtt.redisCachePort                  | MQTT adapter Redis Auth Cache port                                         | 6379         |
 | adapter_coap.udpPort                 | CoAP adapter UDP port                                                      | 5683         |
 | ui.port                              | UI port                                                                    | 3000         |
-| bootstrap.enabled                    | Enable bootstrap service                                                   | false        |
-| bootstrap.dbPort                     | Bootstrap service DB port                                                  | 5432         |
-| bootstrap.httpPort                   | Bootstrap service HTTP port                                                | 8182         |
-| bootstrap.redisESPort                | Bootstrap service Redis Event Store port                                   | 6379         |
 | influxdb.enabled                     | Enable InfluxDB reader & writer                                            | false        |
 | influxdb.dbPort                      | InfluxDB port                                                              | 8086         |
 | influxdb.writer.httpPort             | InfluxDB writer HTTP port                                                  | 8900         |

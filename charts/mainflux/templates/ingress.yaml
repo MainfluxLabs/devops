@@ -119,6 +119,20 @@ spec:
                 name: {{ .Release.Name }}-filestore
                 port:
                   number: {{ .Values.filestore.httpPort }}
+          - path: /(webhooks.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-webhooks
+                port:
+                  number: {{ .Values.webhooks.httpPort }}
+          - path: /svcwebhooks/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-webhooks
+                port:
+                  number: {{ .Values.webhooks.httpPort }}
 {{- if .Values.certs.enabled -}}
           - path: /(certs.*|serials.*)
             pathType: Prefix
@@ -145,22 +159,6 @@ spec:
                 name: {{ .Release.Name }}-notifier-smtp
                 port:
                   number: {{ .Values.notifier_smtp.httpPort }}
-{{- end }}
-{{- if .Values.bootstrap.enabled }}
-          - path: /bootstrap/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-bootstrap
-                port:
-                  number: {{ .Values.bootstrap.httpPort }}
-          - path: /bs/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Release.Name }}-bootstrap
-                port:
-                  number: {{ .Values.bootstrap.httpPort }}
 {{- end }}
 {{- if .Values.influxdb.enabled }}
           - path: /reader/?(.*)

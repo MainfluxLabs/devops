@@ -39,6 +39,10 @@ dependencies:
   - name: postgresql
     version: "11.8.1"
     repository: "@bitnami"
+    alias: postgresqlwebhooks
+  - name: postgresql
+    version: "11.8.1"
+    repository: "@bitnami"
     alias: postgresqlcerts
     condition: postgresqlcerts.enabled
   - name: postgresql

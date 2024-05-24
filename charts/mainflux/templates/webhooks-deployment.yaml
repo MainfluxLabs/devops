@@ -1,0 +1,63 @@
+# Copyright (c) Mainflux
+# SPDX-License-Identifier: Apache-2.0
+
+{{- if .Values.webhooks.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-webhooks-config
+#data:
+  #config.toml:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-webhooks
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+      component: webhooks
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        component: webhooks
+    spec:
+      containers:
+        - env:
+            - name: MF_WEBHOOKS_LOG_LEVEL
+              value: "{{ default .Values.defaults.logLevel .Values.webhooks.logLevel }}"
+            - name: MF_BROKER_URL
+              value: nats://{{ .Release.Name }}-nats-client:{{ .Values.defaults.natsPort }}
+            - name: MF_WEBHOOKS_HTTP_PORT
+              value: "{{ .Values.webhooks.httpPort }}"
+            - name: MF_WEBHOOKS_DB_HOST
+              value: {{ .Release.Name }}-postgresqlwebhooks
+            - name: MF_WEBHOOKS_DB
+              value: "{{ .Values.postgresqlwebhooks.auth.database }}"
+            - name: MF_WEBHOOKS_DB_PORT
+              value: "{{ .Values.webhooks.dbPort }}"
+            - name: MF_WEBHOOKS_DB_USER
+              value: "{{ .Values.postgresqlwebhooks.auth.username}}"
+            - name: MF_WEBHOOKS_DB_PASS
+              value: "{{ .Values.postgresqlwebhooks.auth.postgresPassword}}"
+            - name: MF_WEBHOOKS_DB_PORT
+              value: "{{ .Values.webhooks.db }}"
+            - name: MF_THINGS_AUTH_GRPC_URL
+              value: {{ .Release.Name }}-envoy:{{ .Values.things.authGrpcPort }}
+            - name: MF_JAEGER_URL
+              value: {{ .Release.Name }}-jaeger-operator-jaeger-agent:{{ .Values.defaults.jaegerPort }}
+          image: "{{ default .Values.defaults.image.repository .Values.webhooks.image.repository }}/webhooks:{{ default .Values.defaults.image.tag .Values.webhooks.image.tag }}"
+          imagePullPolicy: {{ default .Values.defaults.image.pullPolicy .Values.webhooks.image.pullPolicy }}
+          name: {{ .Release.Name }}-webhooks
+          ports:
+            - containerPort: {{ .Values.webhooks.httpPort }}
+              protocol: TCP
+      {{- if .Values.defaults.image.pullSecret }}
+      imagePullSecrets:
+        - name: "{{ .Values.defaults.image.pullSecret }}"
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+{{- end }}

@@ -20,6 +20,9 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 11.8.1
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.8.1
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 17.1.2
@@ -29,5 +32,5 @@ dependencies:
 - name: influxdb
   repository: https://charts.bitnami.com/bitnami
   version: 5.4.1
-digest: sha256:d553f27302f907109aaf4d12f9c8179dfc01e90ebd02193f6e8455b426b9edb5
-generated: "2024-04-23T11:15:20.967851+02:00"
+digest: sha256:1162d2abd781b1be7b8195bf386663fcdb428559a15a9dbfce761621480550e4
+generated: "2024-05-03T18:48:29.35204+02:00"

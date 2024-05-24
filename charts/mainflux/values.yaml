@@ -18,7 +18,7 @@ ingress:
   annotations: {}
   labels: {}
   # Uncomment this block for TLS support in public ingress
-  hostname: "example.com"
+  hostname: "seto.mainflux.io"
   # tls:
   #   hostname: ""
   #   secret: "mainflux-server"
@@ -48,9 +48,9 @@ notifier_smtp:
   emailHost: "smtp.example.com"
   smtpPort: 2525
   fromName: "Mainflux"
-  fromEmail: "admin@example.com"
-  username: "mainflux"
-  password: "mainflux"
+  fromEmail: "example@mainflux.com"
+  username: "example@mainflux.com"
+  password: "12345678"
   secret: ""
   httpPort: 8906
 
@@ -106,6 +106,12 @@ auth:
   grpcPort: 8181
   httpPort: 8189
   secret: "secret"
+
+webhooks:
+  enabled: true
+  image: {}
+  dbPort: 5432
+  httpPort: 9021
 
 certs:
   enabled: false
@@ -245,6 +251,22 @@ postgresqlauth:
     username: "postgres"
     password: "mainflux"
     database: "auth"
+
+postgresqlwebhooks:
+  ## If you want to use an external database, set this to false and change postgresqlHost
+  enabled: true
+  name: postgresql-webhooks
+  primary:
+    persistence:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 25m
+  auth:
+    postgresPassword: "mainflux"
+    username: "postgres"
+    password: "mainflux"
+    database: "webhooks"
 
 postgresqlcerts:
   ## If you want to use an external database, set this to false and change postgresqlHost
